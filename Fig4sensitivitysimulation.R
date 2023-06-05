@@ -180,7 +180,7 @@ for (j in sam){
     gplots::angleAxis(1,at=1:2,labels=c("small-ranged", "large-ranged"))
 }
 
-save.image("~/Dropbox/CTS postdoc/Diversification_and_range_size/Fig4sensitivitysimulation.RData")
+#save.image("~/Dropbox/CTS postdoc/Diversification_and_range_size/Fig4sensitivitysimulation.RData")
 
 svg("fig4.svg", 10.5/2.54, 9/2.54, pointsize=8)
 par(mfrow=c(1,2))

@@ -101,7 +101,6 @@ bakedrangesrode$tbl=tbl(mamphylorode)
 bakedrangesrode$log10DR=log10(bakedrangesrode$DR)
 bakedrangesrode$log10tbl=log10(bakedrangesrode$tbl)
 
-#plots
 svg("fig1.svg", 10/2.54, 18/2.54, pointsize=8)
 
 par(mfrow=c(4,2))
@@ -109,7 +108,8 @@ par(mfrow=c(4,2))
 #all together
 modallp=phylolm(log10DR~log10area, data = bakedranges, phy=mamphylo, model="lambda")
 summary(modallp)
-modall=lm(log10DR~log10area, data = bakedranges)
+modall=phylolm(log10DR~log10area, data = bakedranges, phy=mamphylo, model="lambda", lower.bound = 0, upper.bound = 0,
+               starting.value = 0)
 summary(modall)
 
 par(mar=c(4,4,0.1,0))
@@ -117,152 +117,141 @@ plot(bakedranges$log10DR~bakedranges$log10area,xaxt="n", yaxt="n",xlab=parse(tex
 
 newdata=data.frame(log10area=seq(-4, 8, 0.01))
 ci=predict(modall, newdata, interval = "confidence")
-lines(newdata$log10area,ci[,1])
-lines(newdata$log10area,ci[,2],lty=2)
-lines(newdata$log10area,ci[,3],lty=2)
+lines(newdata$log10area,ci[,1], col="green")
+cip=predict(modallp, newdata, interval = "confidence")
+lines(newdata$log10area,cip[,1], col="orange")
 
 axis(2, at=c(-2,-1,0,1),labels=c(0.01,0.1,1,10))
 axis(1,at=c(-4,-2,0,2,4,6,8),labels=rep("",7))
 
 angleAxis(1,at=c(-4,-2,0,2,4,6,8),labels=c("0.0001","0.01", "1", "100", "10 000","1 000 000", "100 000 000"))
 
-text(-4,1,expression("p"[std]*" < 0.001"),adj=0)
-text(-4,0.75,expression("p"[phy]*" < 0.001"),adj=0)
-
 plot(NULL)
-legend("center",c("mean estimate of standard linear model","95% confidence intervals"),lty=c(1,2),inset=0.0)
+legend("center",c("mean estimate of phylogenetic model","mean estimate of standard model"),
+       col=c("orange", "green"),lty=1,inset=0.0)
 
 #carnivora
 modcarnp=phylolm(log10DR~log10area, data = bakedrangescarn, phy=mamphylocarn, model="lambda")
 summary(modcarnp)
-modcarn=lm(log10DR~log10area, data = bakedrangescarn)
+modcarn=phylolm(log10DR~log10area, data = bakedrangescarn, phy=mamphylocarn, model="lambda", lower.bound = 0, upper.bound = 0,
+                starting.value = 0)
 summary(modcarn)
 
 plot(bakedrangescarn$log10DR~bakedrangescarn$log10area,xaxt="n", yaxt="n",xlab=parse(text="area (km^2)"),ylab = "DR metric", main="",xlim=c(log10(0.0001),log10(1e+08)),ylim=c(log10(0.01),log10(10)),pch=20, col=alpha(1,0.1))
 
-newdata=data.frame(log10area=seq(-4, 8, 0.01))
-ci=predict(modcarn, newdata, interval = "confidence")
-lines(newdata$log10area,ci[,1])
-lines(newdata$log10area,ci[,2],lty=2)
-lines(newdata$log10area,ci[,3],lty=2)
+# newdata=data.frame(log10area=seq(-4, 8, 0.01))
+# ci=predict(modcarn, newdata, interval = "confidence")
+# lines(newdata$log10area,ci[,1])
+
 
 axis(2, at=c(-2,-1,0,1),labels=c(0.01,0.1,1,10))
 axis(1,at=c(-4,-2,0,2,4,6,8),labels=rep("",7))
 
 #angleAxis(1,at=c(-4,-2,0,2,4,6,8),labels=c("0.0001","0.01", "1", "100", "10 000","1 000 000", "100 000 000"))
 
-text(-4,1,expression("p"[std]*" = 0.613"),adj=0)
-text(-4,0.75,expression("p"[phy]*" = 0.109"),adj=0)
 
 #cetartiodactyla
 modcetap=phylolm(log10DR~log10area, data = bakedrangesceta, phy=mamphyloceta, model="lambda")
 summary(modcetap)
-modceta=lm(log10DR~log10area, data = bakedrangesceta)
+modceta=phylolm(log10DR~log10area, data = bakedrangesceta, phy=mamphyloceta, model="lambda", lower.bound = 0, upper.bound = 0,
+                starting.value = 0)
 summary(modceta)
 
 plot(bakedrangesceta$log10DR~bakedrangesceta$log10area,xaxt="n", yaxt="n",xlab=parse(text="area (km^2)"),ylab = "DR metric", main="",xlim=c(log10(0.0001),log10(1e+08)),ylim=c(log10(0.01),log10(10)),pch=20, col=alpha(1,0.1))
 
 newdata=data.frame(log10area=seq(-4, 8, 0.01))
 ci=predict(modceta, newdata, interval = "confidence")
-lines(newdata$log10area,ci[,1])
-lines(newdata$log10area,ci[,2],lty=2)
-lines(newdata$log10area,ci[,3],lty=2)
+lines(newdata$log10area,ci[,1], col="green")
+cip=predict(modcetap, newdata, interval = "confidence")
+lines(newdata$log10area,cip[,1], col="orange")
 
 axis(2, at=c(-2,-1,0,1),labels=c(0.01,0.1,1,10))
 axis(1,at=c(-4,-2,0,2,4,6,8),labels=rep("",7))
 
 #angleAxis(1,at=c(-4,-2,0,2,4,6,8),labels=c("0.0001","0.01", "1", "100", "10 000","1 000 000", "100 000 000"))
 
-text(-4,1,expression("p"[std]*" = 0.003"),adj=0)
-text(-4,0.75,expression("p"[phy]*" = 0.045"),adj=0)
 
 #chiroptera
 modchirop=phylolm(log10DR~log10area, data = bakedrangeschiro, phy=mamphylochiro, model="lambda")
 summary(modchirop)
-modchiro=lm(log10DR~log10area, data = bakedrangeschiro)
+modchiro=phylolm(log10DR~log10area, data = bakedrangeschiro, phy=mamphylochiro, model="lambda",lower.bound = 0, upper.bound = 0,
+                 starting.value = 0)
 summary(modchiro)
 
 plot(bakedrangeschiro$log10DR~bakedrangeschiro$log10area,xaxt="n", yaxt="n",xlab=parse(text="area (km^2)"),ylab = "DR metric", main="",xlim=c(log10(0.0001),log10(1e+08)),ylim=c(log10(0.01),log10(10)),pch=20, col=alpha(1,0.1))
 
 newdata=data.frame(log10area=seq(-4, 8, 0.01))
 ci=predict(modchiro, newdata, interval = "confidence")
-lines(newdata$log10area,ci[,1])
-lines(newdata$log10area,ci[,2],lty=2)
-lines(newdata$log10area,ci[,3],lty=2)
+lines(newdata$log10area,ci[,1], col="green")
+cip=predict(modchirop, newdata, interval = "confidence")
+lines(newdata$log10area,cip[,1], col="orange")
 
 axis(2, at=c(-2,-1,0,1),labels=c(0.01,0.1,1,10))
 axis(1,at=c(-4,-2,0,2,4,6,8),labels=rep("",7))
 
 #angleAxis(1,at=c(-4,-2,0,2,4,6,8),labels=c("0.0001","0.01", "1", "100", "10 000","1 000 000", "100 000 000"))
 
-text(-4,1,expression("p"[std]*" < 0.001"),adj=0)
-text(-4,0.75,expression("p"[phy]*" = 0.037"),adj=0)
 
 #eulipotyphla
 modeulip=phylolm(log10DR~log10area, data = bakedrangeseuli, phy=mamphyloeuli, model="lambda")
 summary(modeulip)
-modeuli=lm(log10DR~log10area, data = bakedrangeseuli)
+modeuli=phylolm(log10DR~log10area, data = bakedrangeseuli, phy=mamphyloeuli, model="lambda", lower.bound = 0, upper.bound = 0,
+                starting.value = 0)
 summary(modeuli)
 
 plot(bakedrangeseuli$log10DR~bakedrangeseuli$log10area,xaxt="n", yaxt="n",xlab=parse(text="area (km^2)"),ylab = "DR metric", main="",xlim=c(log10(0.0001),log10(1e+08)),ylim=c(log10(0.01),log10(10)),pch=20, col=alpha(1,0.1))
 
 newdata=data.frame(log10area=seq(-4, 8, 0.01))
 ci=predict(modeuli, newdata, interval = "confidence")
-lines(newdata$log10area,ci[,1])
-lines(newdata$log10area,ci[,2],lty=2)
-lines(newdata$log10area,ci[,3],lty=2)
+lines(newdata$log10area,ci[,1], col="green")
+
 
 axis(2, at=c(-2,-1,0,1),labels=c(0.01,0.1,1,10))
 axis(1,at=c(-4,-2,0,2,4,6,8),labels=rep("",7))
 
 #angleAxis(1,at=c(-4,-2,0,2,4,6,8),labels=c("0.0001","0.01", "1", "100", "10 000","1 000 000", "100 000 000"))
 
-text(-4,1,expression("p"[std]*" = 0.023"),adj=0)
-text(-4,0.75,expression("p"[phy]*" = 0.182"),adj=0)
 
 #primates
 modprimp=phylolm(log10DR~log10area, data = bakedrangesprim, phy=mamphyloprim, model="lambda")
 summary(modprimp)
-modprim=lm(log10DR~log10area, data = bakedrangesprim)
+modprim=phylolm(log10DR~log10area, data = bakedrangesprim, phy=mamphyloprim, model="lambda", lower.bound = 0, upper.bound = 0,
+                starting.value = 0)
 summary(modprim)
 
 plot(bakedrangesprim$log10DR~bakedrangesprim$log10area,xaxt="n", yaxt="n",xlab=parse(text="area (km^2)"),ylab = "DR metric", main="",xlim=c(log10(0.0001),log10(1e+08)),ylim=c(log10(0.01),log10(10)),pch=20, col=alpha(1,0.1))
 
 newdata=data.frame(log10area=seq(-4, 8, 0.01))
 ci=predict(modprim, newdata, interval = "confidence")
-lines(newdata$log10area,ci[,1])
-lines(newdata$log10area,ci[,2],lty=2)
-lines(newdata$log10area,ci[,3],lty=2)
+lines(newdata$log10area,ci[,1], col="green")
+
 
 axis(2, at=c(-2,-1,0,1),labels=c(0.01,0.1,1,10))
+axis(1,at=c(-4,-2,0,2,4,6,8),labels=rep("",7))
 angleAxis(1,at=c(-4,-2,0,2,4,6,8),labels=c("0.0001","0.01", "1", "100", "10 000","1 000 000", "100 000 000"))
 
-text(-4,1,expression("p"[std]*" = 0.010"),adj=0)
-text(-4,0.75,expression("p"[phy]*" = 0.126"),adj=0)
 
 #rodentia
 modrodep=phylolm(log10DR~log10area, data = bakedrangesrode, phy=mamphylorode, model="lambda")
 summary(modrodep)
-modrode=lm(log10DR~log10area, data = bakedrangesrode)
+modrode=phylolm(log10DR~log10area, data = bakedrangesrode, phy=mamphylorode, model="lambda",lower.bound = 0, upper.bound = 0,
+                starting.value = 0)
 summary(modrode)
 
 plot(bakedrangesrode$log10DR~bakedrangesrode$log10area,xaxt="n", yaxt="n",xlab=parse(text="area (km^2)"),ylab = "DR metric", main="",xlim=c(log10(0.0001),log10(1e+08)),ylim=c(log10(0.01),log10(10)),pch=20, col=alpha(1,0.1))
 
 newdata=data.frame(log10area=seq(-4, 8, 0.01))
 ci=predict(modrode, newdata, interval = "confidence")
-lines(newdata$log10area,ci[,1])
-lines(newdata$log10area,ci[,2],lty=2)
-lines(newdata$log10area,ci[,3],lty=2)
+lines(newdata$log10area,ci[,1], col="green")
+
 
 axis(2, at=c(-2,-1,0,1),labels=c(0.01,0.1,1,10))
+axis(1,at=c(-4,-2,0,2,4,6,8),labels=rep("",7))
 angleAxis(1,at=c(-4,-2,0,2,4,6,8),labels=c("0.0001","0.01", "1", "100", "10 000","1 000 000", "100 000 000"))
 
-text(-4,1,expression("p"[std]*" < 0.001"), adj=0)
-text(-4,0.75,expression("p"[phy]*" = 0.174"), adj=0)
 
 
 dev.off()
-
 
 
 
